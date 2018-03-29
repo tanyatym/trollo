@@ -1,0 +1,113 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Sortable - Connect lists</title>
+ 
+  <style>
+  #main{
+	display:flex;
+	flex-flow:row nowrap;
+  }
+  .connectedSortable-box{
+	width:25%;
+  }
+  
+  
+  .connectedSortable {
+    border: 1px solid #eee;
+   
+    min-height: 20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 5px 0 0 0;
+    margin-right: 10px;
+  }
+  .connectedSortable li, .button-plus {
+    margin: 0 5px 5px 5px;
+    padding: 5px;
+    font-size: 1.2em;
+  <!--   width: 120px; -->
+  }
+  .button-plus{
+	width:100%;
+	margin:0;
+  }
+  .item{
+	display:flex;
+	justify-content:space-between;
+	cursor:pointer;
+  }
+  </style>
+  <script src="jquery.js"></script>
+  <script src="jquery-ui.js"></script>
+  <script>
+  $( function() {
+	var lists =  [
+		{title:'задачи', items:['Item-1', 'Item-2']}, 
+	    {title:'в работе', items:['Item-1', 'Item-2']},
+		{title:'готово', items:['Item-1', 'Item-2']},
+		{title:'до выяснения', items:['Item-1', 'Item-2']}
+	]
+	
+	
+    var mainBox = document.getElementById("main");
+	
+	lists.forEach(function(kolonka,i){
+		var div=document.createElement('div');
+		mainBox.appendChild(div);
+		div.classList.add("connectedSortable-box");
+		
+		var header=document.createElement('header');
+		div.appendChild(header);
+		header.innerText=kolonka.title;
+		
+		var ul=document.createElement('ul');
+		div.appendChild(ul);
+		ul.classList.add("connectedSortable");
+			
+		kolonka.items.forEach(function(string){
+			addItem(ul,string);	
+		});
+	
+		var buttonPlus = document.createElement( "button" );
+		buttonPlus.classList.add("button-plus");
+		buttonPlus.innerText="+";
+		buttonPlus.addEventListener("click", function(){addItem(ul)});
+		div.insertAdjacentElement('beforeend',buttonPlus);
+	});
+	
+	function addItem(list, title){
+		if(!title) title="new item";
+		var item = document.createElement( "li" );
+		
+		list.appendChild(item);
+		item.classList.add("ui-state-default", "ui-sortable-handle", "item");
+		item.insertAdjacentHTML('beforeend',"<span>"+title+"</span>");
+		
+		var buttonMinus = document.createElement( "button" );
+		buttonMinus.innerText="-";
+		buttonMinus.addEventListener("click", deletItem);
+		item.insertAdjacentElement('beforeend',buttonMinus);
+	}
+	
+	function deletItem(event){
+		event.target.parentElement.remove();
+	}
+	
+	$( ".connectedSortable" ).sortable({
+      connectWith: ".connectedSortable"
+    }).disableSelection();
+	$(".colonka > button").click(addItem);
+  } );
+ 
+  </script>
+
+</head>
+	<body>
+		 <div id="main">
+		 </div>
+	</body>
+</html>
